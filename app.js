@@ -14,6 +14,27 @@ const oauth = new OAuth2Server({
     allowBearerTokensInQueryString: true,
 });
 
+// Authorization endpoint
+app.get('/oauth/authorize', (req, res) => {
+    const request = new Request(req);
+    const response = new Response(res);
+
+    return oauth.authorize(request, response, {
+        authenticateHandler: {
+            handle: (req) => {
+                // Assuming the user is already authenticated
+                return { id: 'user_id', username: 'user' };
+            },
+        },
+    })
+    .then((authorizationCode) => {
+        res.json(authorizationCode);
+    })
+    .catch((err) => {
+        res.status(err.code || 500).json(err);
+    });
+});
+
 app.post('/oauth/token', (req, res) => {
     const request = new Request(req);
     const response = new Response(res);
