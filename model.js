@@ -12,14 +12,9 @@ const authorizationCodes = [];
 
 module.exports = {
     getClient: (clientId, clientSecret, callback) => {
-
-        console.log("clientSecret", clientSecret)
-        
         const client = clients.find(
-            (client) => client.id === clientId && client.secret === clientSecret
+            (client) => client.id === clientId && (clientSecret ? client.secret === clientSecret : true)
         );
-
-        console.log("client", client)
         callback(null, client);
     },
     saveToken: (token, client, user, callback) => {
